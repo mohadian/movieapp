@@ -122,7 +122,7 @@ class Movie extends Component {
 									data.push(res.data.items[0]);
 								})
 								.catch(error => {
-									console.log(error); //eslint-disable-line
+									// console.log(error); //eslint-disable-line
 								});
 			return request;
 		});
@@ -215,7 +215,7 @@ class Movie extends Component {
 	_renderCardImage = (info) => {
 		return (
 			<SharedElementTransition
-				sharedElementId={`SET${this.props.movieId}`}
+				sharedElementId={this.props.sharedElementId}
 				showDuration={SHOW_DURATION}
 				hideDuration={HIDE_DURATION}
 				showInterpolation={

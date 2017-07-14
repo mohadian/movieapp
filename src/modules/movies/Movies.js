@@ -73,14 +73,15 @@ class Movies extends Component {
 	}
 
 
-	_viewMovie(movieId, passedInfo) {
+	_viewMovie(movieId, passedInfo, sharedElementId) {
 		this.props.navigator.push({
 			screen: 'movieapp.Movie',
 			passProps: {
 				passedInfo,
-				movieId
+				movieId,
+				sharedElementId,
 			},
-			sharedElements: [`SET${movieId}`],
+			sharedElements: [sharedElementId],
 			animationType: 'fade',
 		});
 	}

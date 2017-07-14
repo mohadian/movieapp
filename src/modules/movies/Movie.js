@@ -8,9 +8,12 @@ import {
 	ToastAndroid,
 	View
 } from 'react-native';
+
+import { SharedElementTransition } from 'react-native-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
+import * as Animatable from 'react-native-animatable';
 import Swiper from 'react-native-swiper';
 import axios from 'axios';
 import { bindActionCreators } from 'redux';
@@ -24,6 +27,9 @@ import ProgressBar from '../_global/ProgressBar';
 import Trailers from './tabs/Trailers';
 import styles from './styles/Movie';
 import { TMDB_IMG_URL, YOUTUBE_API_KEY, YOUTUBE_URL } from '../../constants/api';
+
+const SHOW_DURATION = 800;
+const HIDE_DURATION = 400;
 
 class Movie extends Component {
 	constructor(props) {
@@ -144,14 +150,103 @@ class Movie extends Component {
 	_onNavigatorEvent(event) {
 		if (event.type === 'NavBarButtonPress') {
 			if (event.id === 'close') {
-				this.props.navigator.dismissModal();
+				this.props.navigator.pop();
 			}
 		}
 	}
 
+	_renderGenre = (info) => {
+		return (
+			this.state.isLoading ? <View /> :
+				<View style={styles.cardGenre}>
+					{
+						info.genres.map(item => (
+							<Text key={item.id} style={styles.cardGenreItem}>{item.name}</Text>
+						))
+					}
+				</View>
+		);
+	}
+
+	_renderSwiper = (info) => {
+		return (
+			this.state.isLoading ? <View /> :
+				<Swiper
+					style={styles.swiper}
+					autoplay
+					autoplayTimeout={4}
+					showsPagination={false}
+					height={248}
+					loop
+					index={5}>
+					{
+						info.images.backdrops.map((item, index) => (
+							<View key={index}>
+								<Image source={{ uri: `${TMDB_IMG_URL}/w780/${(item.file_path)}` }} style={styles.imageBackdrop} />
+								<LinearGradient colors={['rgba(0, 0, 0, 0.2)', 'rgba(0,0,0, 0.2)', 'rgba(0,0,0, 0.7)']} style={styles.linearGradient} />
+							</View>
+						))
+					}
+				</Swiper>
+		);
+	}
+
+	_renderTabs = (info) => {
+		return (
+			this.state.isLoading ? <View /> :
+				<View style={styles.contentContainer}>
+					<ScrollableTabView
+						onChangeTab={this._onChangeTab}
+						renderTabBar={() => (
+							<DefaultTabBar
+								textStyle={styles.textStyle}
+								underlineStyle={styles.underlineStyle}
+								style={styles.tabBar}
+							/>
+						)}>
+						<Info tabLabel="INFO" info={info} />
+						<Casts tabLabel="CASTS" info={info} getTabHeight={this._getTabHeight} />
+						<Trailers tabLabel="TRAILERS" youtubeVideos={this.state.youtubeVideos} openYoutube={this._openYoutube} getTabHeight={this._getTabHeight} />
+					</ScrollableTabView>
+				</View>
+		);
+	}
+
+	_renderCardImage = (info) => {
+		return (
+			<SharedElementTransition
+				sharedElementId={`SET${this.props.movieId}`}
+				showDuration={SHOW_DURATION}
+				hideDuration={HIDE_DURATION}
+				showInterpolation={
+					{
+						type: 'path',
+						controlX1: '0.5',
+						controlY1: '1',
+						controlX2: '0',
+						controlY2: '0.5',
+						easing: 'FastOutSlowIn'
+					}
+				}
+				hideInterpolation={
+					{
+						type: 'path',
+						controlX1: '0.5',
+						controlY1: '0',
+						controlX2: '1',
+						controlY2: '0.5',
+						easing:'FastOutSlowIn'
+					}
+				}
+			>
+				<Image source={{ uri: `${TMDB_IMG_URL}/w185/${info.poster_path}` }} style={styles.cardImage} />
+			</SharedElementTransition>
+		);
+	}
+
 	render() {
 		const iconStar = <Icon name="md-star" size={16} color="#F5B642" />;
-		const { details } = this.props;
+		const { details, passedInfo } = this.props;
 		const info = details;
 
 		let height;
@@ -160,12 +255,10 @@ class Movie extends Component {
 		if (this.state.tab === 2) height = this.state.trailersTabHeight;
 
 		return (
-			this.state.isLoading ? <View style={styles.progressBar}><ProgressBar /></View> :
 			<ScrollView
 					style={styles.container}
 					onScroll={this._onScroll.bind(this)}
 					scrollEventThrottle={100}
-					onContentSizeChange={this._onContentSizeChange}
 					refreshControl={
 						<RefreshControl
 							refreshing={this.state.isRefreshing}
@@ -177,61 +270,23 @@ class Movie extends Component {
 							progressBackgroundColor="white"
 						/>
 					}>
-				<View style={{ height }}>
-					<Swiper
-						style={styles.swiper}
-						autoplay
-						autoplayTimeout={4}
-						showsPagination={false}
-						height={248}
-						loop
-						index={5}>
-						{
-							info.images.backdrops.map((item, index) => (
-								<View key={index}>
-									<Image source={{ uri: `${TMDB_IMG_URL}/w780/${(item.file_path)}` }} style={styles.imageBackdrop} />
-									<LinearGradient colors={['rgba(0, 0, 0, 0.2)', 'rgba(0,0,0, 0.2)', 'rgba(0,0,0, 0.7)']} style={styles.linearGradient} />
-								</View>
-							))
-						}
-					</Swiper>
-					<View style={styles.cardContainer}>
-						<Image source={{ uri: `${TMDB_IMG_URL}/w185/${info.poster_path}` }} style={styles.cardImage} />
-						<View style={styles.cardDetails}>
-							<Text style={styles.cardTitle}>{info.original_title}</Text>
-							<Text style={styles.cardTagline}>{info.tagline}</Text>
-							<View style={styles.cardGenre}>
-								{
-									info.genres.map(item => (
-										<Text key={item.id} style={styles.cardGenreItem}>{item.name}</Text>
-									))
-								}
+				{this._renderSwiper(info)}
+				<View style={styles.cardContainer}>
+					{this._renderCardImage(passedInfo)}
+					<View style={styles.cardDetails}>
+						<Text style={styles.cardTitle}>{passedInfo.original_title}</Text>
+						<Text style={styles.cardTagline}>{passedInfo.tagline}</Text>
+						{this._renderGenre(info)}
+						<View style={styles.cardNumbers}>
+							<View style={styles.cardStar}>
+								{iconStar}
+								<Text style={styles.cardStarRatings}>8.9</Text>
 							</View>
-							<View style={styles.cardNumbers}>
-								<View style={styles.cardStar}>
-									{iconStar}
-									<Text style={styles.cardStarRatings}>8.9</Text>
-								</View>
-								<Text style={styles.cardRunningHours} />
-							</View>
+							<Text style={styles.cardRunningHours} />
 						</View>
 					</View>
-					<View style={styles.contentContainer}>
-						<ScrollableTabView
-							onChangeTab={this._onChangeTab}
-							renderTabBar={() => (
-								<DefaultTabBar
-									textStyle={styles.textStyle}
-									underlineStyle={styles.underlineStyle}
-									style={styles.tabBar}
-								/>
-							)}>
-							<Info tabLabel="INFO" info={info} />
-							<Casts tabLabel="CASTS" info={info} getTabHeight={this._getTabHeight} />
-							<Trailers tabLabel="TRAILERS" youtubeVideos={this.state.youtubeVideos} openYoutube={this._openYoutube} getTabHeight={this._getTabHeight} />
-						</ScrollableTabView>
-					</View>
 				</View>
+				{this._renderTabs(info)}
 			</ScrollView>
 		);
 	}

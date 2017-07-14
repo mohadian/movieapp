@@ -5,6 +5,7 @@ import {
 	ListView,
 	RefreshControl
 } from 'react-native';
+
 import axios from 'axios';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -82,21 +83,15 @@ class MoviesList extends Component {
 		}
 	}
 
-	_viewMovie(movieId) {
-		this.props.navigator.showModal({
+	_viewMovie(movieId, passedInfo) {
+		this.props.navigator.push({
 			screen: 'movieapp.Movie',
 			passProps: {
-				movieId
+				passedInfo,
+				movieId,
 			},
-			backButtonHidden: true,
-			navigatorButtons: {
-				rightButtons: [
-					{
-						id: 'close',
-						icon: iconsMap['ios-arrow-round-down']
-					}
-				]
-			}
+			sharedElements: [`SET${movieId}`],
+			animated: false
 		});
 	}
 

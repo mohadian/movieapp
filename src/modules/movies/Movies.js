@@ -60,7 +60,7 @@ class Movies extends Component {
 				}
 			];
 		}
-		this.props.navigator.showModal({
+		this.props.navigator.push({
 			title,
 			screen: 'movieapp.MoviesList',
 			passProps: {
@@ -72,21 +72,16 @@ class Movies extends Component {
 		});
 	}
 
-	_viewMovie(movieId) {
-		this.props.navigator.showModal({
+
+	_viewMovie(movieId, passedInfo) {
+		this.props.navigator.push({
 			screen: 'movieapp.Movie',
 			passProps: {
+				passedInfo,
 				movieId
 			},
-			backButtonHidden: true,
-			navigatorButtons: {
-				rightButtons: [
-					{
-						id: 'close',
-						icon: iconsMap['ios-arrow-round-down']
-					}
-				]
-			}
+			sharedElements: [`SET${movieId}`],
+			animationType: 'fade',
 		});
 	}
 
@@ -108,7 +103,7 @@ class Movies extends Component {
 						}
 					];
 				}
-				this.props.navigator.showModal({
+				this.props.navigator.push({
 					screen: 'movieapp.Search',
 					title: 'Search',
 					navigatorButtons: {

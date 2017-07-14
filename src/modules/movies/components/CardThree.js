@@ -6,6 +6,7 @@ import {
 	TouchableOpacity,
 	View
 } from 'react-native';
+import { SharedElementTransition } from 'react-native-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 
@@ -24,9 +25,11 @@ class CardThree extends Component {
 		const { info, viewMovie } = this.props;
 		return (
 			<View style={styles.cardContainer}>
-				<TouchableOpacity activeOpacity={0.9} onPress={viewMovie.bind(this, info.id)}>
+				<TouchableOpacity activeOpacity={0.9} onPress={viewMovie.bind(this, info.id, info)}>
 					<View style={styles.card}>
-						<Image source={{ uri: `${TMDB_IMG_URL}/w185/${info.poster_path}` }} style={styles.cardImage} />
+						<SharedElementTransition sharedElementId={`SET${info.id}`}>
+							<Image source={{ uri: `${TMDB_IMG_URL}/w185/${info.poster_path}` }} style={styles.cardImage} />
+						</SharedElementTransition>
 						<View style={styles.cardDetails}>
 							<Text
 								style={styles.cardTitle}

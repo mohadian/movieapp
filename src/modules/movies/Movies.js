@@ -94,22 +94,22 @@ class Movies extends Component {
 	_onNavigatorEvent(event) {
 		if (event.type === 'NavBarButtonPress') {
 			if (event.id === 'search') {
-				let rightButtons = [];
-				if (Platform.OS === 'ios') {
-					rightButtons = [
-						{
-							id: 'close',
-							title: 'Close',
-							icon: iconsMap['ios-close']
-						}
-					];
-				}
+				// let rightButtons = [];
+				// if (Platform.OS === 'ios') {
+				// 	rightButtons = [
+				// 		{
+				// 			id: 'close',
+				// 			title: 'Close',
+				// 			icon: iconsMap['ios-close']
+				// 		}
+				// 	];
+				// }
 				this.props.navigator.push({
 					screen: 'movieapp.Search',
 					title: 'Search',
-					navigatorButtons: {
-						rightButtons
-					}
+					// navigatorButtons: {
+					// 	rightButtons
+					// }
 				});
 			}
 		}

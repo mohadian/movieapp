@@ -82,21 +82,17 @@ class Search extends Component {
 		}
 	}
 
-	_viewMovie(movieId) {
+
+	_viewMovie(movieId, passedInfo, sharedElementId) {
 		this.props.navigator.push({
 			screen: 'movieapp.Movie',
 			passProps: {
-				movieId
+				passedInfo,
+				movieId,
+				sharedElementId,
 			},
-			backButtonHidden: true,
-			navigatorButtons: {
-				rightButtons: [
-					{
-						id: 'close',
-						icon: iconsMap['ios-arrow-round-down']
-					}
-				]
-			}
+			sharedElements: [sharedElementId],
+			animationType: 'fade',
 		});
 	}
 

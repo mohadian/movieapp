@@ -4,6 +4,7 @@ import { Navigation } from 'react-native-navigation';
 
 import { registerScreens } from './screens';
 import configureStore from './store/configureStore';
+import { iconsMap, iconsLoaded } from './utils/AppIcons';
 
 const store = configureStore();
 
@@ -34,11 +35,18 @@ Navigation.startSingleScreenApp({
 			{
 				id: 'sideMenu'
 			}
+		],
+		rightButtons: [
+			{
+				title: 'Search',
+				id: 'search',
+				icon: iconsMap['ios-search']
+			}
 		]
 	},
 	drawer: {
 		left: {
-			screen: 'movieapp.Drawer'
+			screen: 'movieapp.NetflixMenu'
 		}
 	}
 });

@@ -46,6 +46,7 @@ class Movies extends Component {
 	_retrieveMovies(isRefreshed) {
 		this.props.actions.retrieveNowPlayingMovies();
 		this.props.actions.retrievePopularMovies();
+		this.props.actions.retrieveUpcomingMovies();
 		if (isRefreshed && this.setState({ isRefreshing: false }));
 	}
 
@@ -120,7 +121,8 @@ class Movies extends Component {
 	}
 
 	render() {
-		const { nowPlayingMovies, popularMovies } = this.props;
+		const { nowPlayingMovies, popularMovies, upcomingMovies } = this.props;
+		const iconPopular = <Icon name="md-trophy" size={21} color="#9F9F9F" style={{ paddingLeft: 3, width: 22 }} />;
 		const iconPlay = <Icon name="md-play" size={21} color="#9F9F9F" style={{ paddingLeft: 3, width: 22 }} />;
 		const iconTop = <Icon name="md-trending-up" size={21} color="#9F9F9F" style={{ width: 22 }} />;
 		const iconUp = <Icon name="md-recording" size={21} color="#9F9F9F" style={{ width: 22 }} />;
@@ -145,7 +147,7 @@ class Movies extends Component {
 					autoplayTimeout={4}
 					showsPagination={false}
 					height={248}>
-					{nowPlayingMovies.results.map(info => (
+					{upcomingMovies.results.map(info => (
 						<CardOne key={info.id} info={info} viewMovie={this._viewMovie} />
 					))}
 				</Swiper>
@@ -162,6 +164,21 @@ class Movies extends Component {
 					</View>
 					<ScrollView horizontal showsHorizontalScrollIndicator={false}>
 						{popularMovies.results.map(info => (
+							<CardTwo key={info.id} info={info} viewMovie={this._viewMovie} />
+						))}
+					</ScrollView>
+					<View style={styles.listHeading}>
+					  <Text style={styles.listHeadingLeft}>Now Playing</Text>
+						<TouchableOpacity>
+							<Text
+								style={styles.listHeadingRight}
+								onPress={this._viewMoviesList.bind(this, 'now_playing', 'Now Playing')}>
+								See all
+							</Text>
+						</TouchableOpacity>
+					</View>
+					<ScrollView horizontal showsHorizontalScrollIndicator={false}>
+						{nowPlayingMovies.results.map(info => (
 							<CardTwo key={info.id} info={info} viewMovie={this._viewMovie} />
 						))}
 					</ScrollView>
@@ -205,12 +222,14 @@ Movies.propTypes = {
 	actions: PropTypes.object.isRequired,
 	nowPlayingMovies: PropTypes.object.isRequired,
 	popularMovies: PropTypes.object.isRequired,
+	upcomingMovies: PropTypes.object.isRequired,
 	navigator: PropTypes.object
 };
 
 function mapStateToProps(state, ownProps) {
 	return {
 		nowPlayingMovies: state.movies.nowPlayingMovies,
+		upcomingMovies: state.movies.upcomingMovies,
 		popularMovies: state.movies.popularMovies
 	};
 }

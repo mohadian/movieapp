@@ -2,6 +2,7 @@
 import { Navigation } from 'react-native-navigation';
 
 import Drawer from './modules/_global/Drawer';
+import NetflixMenu from './modules/_global/NetflixMenu';
 import Movies from './modules/movies/Movies';
 import MoviesList from './modules/movies/MoviesList';
 import Movie from './modules/movies/Movie';
@@ -13,4 +14,5 @@ export function registerScreens(store, Provider) {
 	Navigation.registerComponent('movieapp.MoviesList', () => MoviesList, store, Provider);
 	Navigation.registerComponent('movieapp.Search', () => Search, store, Provider);
 	Navigation.registerComponent('movieapp.Drawer', () => Drawer);
+	Navigation.registerComponent('movieapp.NetflixMenu', () => NetflixMenu, store, Provider)
 }

@@ -2,7 +2,7 @@ import axios from 'axios';
 import * as types from '../../constants/actionTypes';
 import { TMDB_URL, TMDB_API_KEY } from '../../constants/api';
 
-// GENRES
+// MOVIES GENRES
 export function retrieveMoviesGenresSuccess(res) {
 	return {
 		type: types.RETRIEVE_MOVIES_GENRES_SUCCESS,
@@ -18,6 +18,46 @@ export function retrieveMoviesGenres() {
 		})
 		.catch(error => {
 			console.log(error); //eslint-disable-line
+		});
+	};
+}
+
+// MOVIES LIST GENRES
+export function retrieveMoviesListGenresSuccess(res) {
+	return {
+		type: types.RETRIEVE_MOVIES_LIST_GENRES_SUCCESS,
+		moviesGenres: res.data
+	};
+}
+
+export function retrieveMoviesGenresList() {
+	return function (dispatch) {
+		return axios.get(`${TMDB_URL}/genre/{genre_id}/movies?api_key=${TMDB_API_KEY}`)
+		.then(res => {
+			dispatch(retrieveMoviesListGenresSuccess(res));
+		})
+		.catch(error => {
+			console.log(error); //eslint-disable-line
+		});
+	};
+}
+
+// UPCOMING
+export function retrieveUpcomingMoviesSuccess(res) {
+	return {
+		type: types.RETRIEVE_UPCOMING_MOVIES_SUCCESS,
+		upcomingMovies: res.data
+	};
+}
+
+export function retrieveUpcomingMovies(page) {
+	return function (dispatch) {
+		return axios.get(`${TMDB_URL}/movie/upcoming?api_key=${TMDB_API_KEY}&page=${page}`)
+		.then(res => {
+			dispatch(retrieveUpcomingMoviesSuccess(res));
+		})
+		.catch(error => {
+			console.log('Upcoming', error); //eslint-disable-line
 		});
 	};
 }

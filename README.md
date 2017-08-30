@@ -24,7 +24,7 @@ Discover Movies and TV shows
 Clone this repo
 
 ```sh
-$ git clone git@github.com:JuneDomingo/movieapp.git
+$ git clone git@github.com:mohadian/movieapp.git
 $ cd movieapp
 $ yarn install or npm install
 ```

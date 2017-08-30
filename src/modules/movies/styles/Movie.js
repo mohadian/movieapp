@@ -24,7 +24,8 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
 	container: {
-		backgroundColor: '#0a0a0a'
+		backgroundColor: '#0a0a0a',
+		flex: 1
 	},
 	swiper: {
 		// position: 'absolute',

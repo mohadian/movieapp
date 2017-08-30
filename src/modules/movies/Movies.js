@@ -61,7 +61,7 @@ class Movies extends Component {
 				}
 			];
 		}
-		this.props.navigator.showModal({
+		this.props.navigator.push({
 			title,
 			screen: 'movieapp.MoviesList',
 			passProps: {
@@ -73,21 +73,17 @@ class Movies extends Component {
 		});
 	}
 
-	_viewMovie(movieId) {
-		this.props.navigator.showModal({
+
+	_viewMovie(movieId, passedInfo, sharedElementId) {
+		this.props.navigator.push({
 			screen: 'movieapp.Movie',
 			passProps: {
-				movieId
+				passedInfo,
+				movieId,
+				sharedElementId,
 			},
-			backButtonHidden: true,
-			navigatorButtons: {
-				rightButtons: [
-					{
-						id: 'close',
-						icon: iconsMap['ios-arrow-round-down']
-					}
-				]
-			}
+			sharedElements: [sharedElementId],
+			animationType: 'fade',
 		});
 	}
 
@@ -99,22 +95,22 @@ class Movies extends Component {
 	_onNavigatorEvent(event) {
 		if (event.type === 'NavBarButtonPress') {
 			if (event.id === 'search') {
-				let rightButtons = [];
-				if (Platform.OS === 'ios') {
-					rightButtons = [
-						{
-							id: 'close',
-							title: 'Close',
-							icon: iconsMap['ios-close']
-						}
-					];
-				}
-				this.props.navigator.showModal({
+				// let rightButtons = [];
+				// if (Platform.OS === 'ios') {
+				// 	rightButtons = [
+				// 		{
+				// 			id: 'close',
+				// 			title: 'Close',
+				// 			icon: iconsMap['ios-close']
+				// 		}
+				// 	];
+				// }
+				this.props.navigator.push({
 					screen: 'movieapp.Search',
 					title: 'Search',
-					navigatorButtons: {
-						rightButtons
-					}
+					// navigatorButtons: {
+					// 	rightButtons
+					// }
 				});
 			}
 		}

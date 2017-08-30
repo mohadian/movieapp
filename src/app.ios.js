@@ -21,50 +21,47 @@ const navigatorStyle = {
 	drawUnderTabBar: true
 };
 
-class App extends Component {
-	constructor(props) {
-		super(props);
-		iconsLoaded.then(() => {
-			this.startApp();
-		});
-	}
-
-	startApp() {
-		Navigation.startTabBasedApp({
-			tabs: [
-				{
-					label: 'Movies',
-					screen: 'movieapp.Movies',
-					icon: iconsMap['ios-film-outline'],
-					selectedIcon: iconsMap['ios-film'],
-					title: 'Movies',
-					navigatorStyle,
-					navigatorButtons: {
-						rightButtons: [
-							{
-								title: 'Search',
-								id: 'search',
-								icon: iconsMap['ios-search']
-							}
-						]
-					}
-				},
-				{
-					label: 'TV Shows',
-					screen: 'movieapp.Movies',
-					icon: iconsMap['ios-desktop-outline'],
-					selectedIcon: iconsMap['ios-desktop'],
-					title: 'Movies',
-					navigatorStyle
-				}
-			],
-			tabsStyle: {
-				tabBarButtonColor: 'white',
-				tabBarSelectedButtonColor: 'white',
-				tabBarBackgroundColor: 'black'
-			}
-		});
-	}
+const initialize = () => {
+	iconsLoaded.then(() => {
+		startApp();
+	});
 }
 
-export default App;
+const startApp = () => {
+	Navigation.startTabBasedApp({
+		tabs: [
+			{
+				label: 'Movies',
+				screen: 'movieapp.Movies',
+				icon: iconsMap['ios-film-outline'],
+				selectedIcon: iconsMap['ios-film'],
+				title: 'Movies',
+				navigatorStyle,
+				navigatorButtons: {
+					rightButtons: [
+						{
+							title: 'Search',
+							id: 'search',
+							icon: iconsMap['ios-search']
+						}
+					]
+				}
+			},
+			{
+				label: 'TV Shows',
+				screen: 'movieapp.Movies',
+				icon: iconsMap['ios-desktop-outline'],
+				selectedIcon: iconsMap['ios-desktop'],
+				title: 'Movies',
+				navigatorStyle
+			}
+		],
+		tabsStyle: {
+			tabBarButtonColor: 'white',
+			tabBarSelectedButtonColor: 'white',
+			tabBarBackgroundColor: 'black'
+		}
+	});
+}
+
+export default initialize;
